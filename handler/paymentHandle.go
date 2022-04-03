@@ -5,6 +5,7 @@ import (
 
 	"github.com/camunda-cloud/zeebe/clients/go/pkg/entities"
 	"github.com/camunda-cloud/zeebe/clients/go/pkg/worker"
+	"github.com/schangech/zeebe-go-simple-example/handler/common"
 )
 
 func PaymentHandleJob(client worker.JobClient, job entities.Job) {
@@ -13,5 +14,5 @@ func PaymentHandleJob(client worker.JobClient, job entities.Job) {
 		fmt.Println("is a payment handle func")
 	}
 
-	wrapHandle(client, job, ff)
+	common.WrapHandle(client, job, ff)
 }

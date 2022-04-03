@@ -1,4 +1,4 @@
-package handler
+package common
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/camunda-cloud/zeebe/clients/go/pkg/worker"
 )
 
-func failJob(client worker.JobClient, job entities.Job) {
+func FailJob(client worker.JobClient, job entities.Job) {
 	log.Println("Failed to complete job", job.GetKey())
 
 	ctx := context.Background()

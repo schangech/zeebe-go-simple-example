@@ -1,4 +1,4 @@
-package handler
+package common
 
 import (
 	"context"
@@ -10,20 +10,20 @@ import (
 	"github.com/camunda-cloud/zeebe/clients/go/pkg/worker"
 )
 
-func wrapHandle(client worker.JobClient, job entities.Job, f func()) {
+func WrapHandle(client worker.JobClient, job entities.Job, f func()) {
 	jobKey := job.GetKey()
 
 	headers, err := job.GetCustomHeadersAsMap()
 	if err != nil {
 		// failed to handle job as we require the custom job headers
-		failJob(client, job)
+		FailJob(client, job)
 		return
 	}
 
 	variables, err := job.GetVariablesAsMap()
 	if err != nil {
 		// failed to handle job as we require the variables
-		failJob(client, job)
+		FailJob(client, job)
 		return
 	}
 
@@ -37,7 +37,7 @@ func wrapHandle(client worker.JobClient, job entities.Job, f func()) {
 	request, err := client.NewCompleteJobCommand().JobKey(jobKey).VariablesFromMap(variables)
 	if err != nil {
 		// failed to set the updated variables
-		failJob(client, job)
+		FailJob(client, job)
 		return
 	}
 

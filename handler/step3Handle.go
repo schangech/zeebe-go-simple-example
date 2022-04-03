@@ -6,6 +6,7 @@ import (
 
 	"github.com/camunda-cloud/zeebe/clients/go/pkg/entities"
 	"github.com/camunda-cloud/zeebe/clients/go/pkg/worker"
+	"github.com/schangech/zeebe-go-simple-example/handler/common"
 )
 
 func Step3HandleJob(client worker.JobClient, job entities.Job) {
@@ -14,14 +15,14 @@ func Step3HandleJob(client worker.JobClient, job entities.Job) {
 	headers, err := job.GetCustomHeadersAsMap()
 	if err != nil {
 		// failed to handle job as we require the custom job headers
-		failJob(client, job)
+		common.FailJob(client, job)
 		return
 	}
 
 	variables, err := job.GetVariablesAsMap()
 	if err != nil {
 		// failed to handle job as we require the variables
-		failJob(client, job)
+		common.FailJob(client, job)
 		return
 	}
 
@@ -29,7 +30,7 @@ func Step3HandleJob(client worker.JobClient, job entities.Job) {
 	request, err := client.NewCompleteJobCommand().JobKey(jobKey).VariablesFromMap(variables)
 	if err != nil {
 		// failed to set the updated variables
-		failJob(client, job)
+		common.FailJob(client, job)
 		return
 	}
 

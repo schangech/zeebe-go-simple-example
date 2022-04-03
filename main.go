@@ -22,9 +22,11 @@ func main() {
 	zbClient := client.NewZeeBeGWClient()
 
 	// 如果采用本地提交上传BPMN流程文件
+	// upload bpmn pipeline to server
 	actions.DeployProcess(ctx, zbClient, "bpmn/order-process.bpmn")
 
-	//采用程序启动Process实例
+	// 采用程序启动Process实例
+	// launch a zeebe process
 	actions.CreateProcess(ctx, zbClient, "order-process")
 
 	// 将我们自己实现的job注册到zeeBe中，用于watch zeeBe中job
@@ -43,6 +45,7 @@ func main() {
 // 目前还存在问题，因为jobWorker Open 是协程，如果立即close，会造成handler没有执行完
 // 但如果在handler中嵌入channel，则需要handler支持参数才能支持
 // wrapOnceService 采用这个函数封装，表示对应的handle只会执行一次，即退出
+// execute once
 func wrapOnceService(jobTypeName string, handleFunc func(worker.JobClient, entities.Job), zbClient zbc.Client) {
 
 	handler.OnceReadyClose[jobTypeName] = make(chan struct{})
@@ -57,10 +60,10 @@ func wrapOnceService(jobTypeName string, handleFunc func(worker.JobClient, entit
 
 func closeOnce(key string) {
 	<-handler.OnceReadyClose[key]
-	//<-readyClose
 }
 
 // wrapWatchingService 采用这个函数封装，表示对应的handle会一直执行，除非认为ctrl+c退出
+// watching zeebe service's job
 func wrapWatchingService(jobTypeName string, handleFunc func(worker.JobClient, entities.Job), zbClient zbc.Client) {
 
 	fmt.Printf("start watch jobName %s \n", jobTypeName)
